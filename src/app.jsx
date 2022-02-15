@@ -13,18 +13,32 @@ class App extends Component {
   };
 
   handleIncrement = (habit) => {
-    const habits = [...this.state.habits]; //Spread Operator, 직접적으로 state 수정하면 좋지 않기 때문
-    const index = habits.indexOf(habit);
-    habits[index].count++;
-    this.setState({ habit }); //key와 value의 이름이 동일한 경우 하나 생략 가능
+    const habits = this.state.habits.map((item) => {
+      if (item.id === habit.id) {
+        return { ...habit, count: habit.count + 1 };
+      }
+      return item;
+    });
+    this.setState({ habits });
   };
 
+  // handleDecrement = (habit) => {
+  //   const habits = [...this.state.habits];
+  //   const index = habits.indexOf(habit);
+  //   const count = habits[index].count - 1;
+  //   habits[index].count = count < 0 ? 0 : count;
+  //   this.setState({ habits });
+  // };
+
   handleDecrement = (habit) => {
-    const habits = [...this.state.habits];
-    const index = habits.indexOf(habit);
-    const count = habits[index].count - 1;
-    habits[index].count = count < 0 ? 0 : count;
-    this.setState({ habit });
+    const habits = this.state.habits.map((item) => {
+      if (item.id === habit.id) {
+        const count = habit.count - 1;
+        return { ...habit, count: count < 0 ? 0 : count };
+      }
+      return item;
+    });
+    this.setState({ habits });
   };
 
   handleDelete = (habit) => {
@@ -43,7 +57,9 @@ class App extends Component {
 
   handleReset = () => {
     const habits = this.state.habits.map((habit) => {
-      habit.count = 0;
+      if (habit.count !== 0) {
+        return { ...habit, count: 0 };
+      }
       return habit;
     });
     this.setState({ habits });
